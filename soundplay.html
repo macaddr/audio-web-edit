@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>soundPlay</title>
+    <script src="./dist/jquery-3.1.0.min.js"></script>
+    <script src="./dist/wavesurfer.js"></script>
+    <script src="./dist/plugin/wavesurfer.regions.min.js"></script>
+    <script src="./dist/plugin/wavesurfer.timeline.min.js"></script>
+
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.1.2/plugin/wavesurfer.regions.min.js"></script>-->
+</head>
+
+<body>
+    <div id="waveform"></div>
+    <div id="waveform-timeline"></div>
+    <div><input id="slider" type="range" min="1" max="200" value="1" style="width: 100%" /></div>
+    <div><button id="start">start</button>
+        <button id="playPause">play/pause</button>
+        <button id="stop">stop</button></div>
+    <div id="ttime"></div>
+    <script>
+        $(function() {
+
+            var wavesurfer = WaveSurfer.create({
+                container: '#waveform',
+                waveColor: 'violet',
+                progressColor: 'purple',
+                interact: false
+
+            });
+
+            wavesurfer.load('./usc.mp3');
+
+            wavesurfer.on('ready', function() {
+                // Enable creating regions by dragging
+                wavesurfer.enableDragSelection({
+                    color: 'rgba(37, 57, 210, 0.78)'
+                });
+                var timeline = Object.create(WaveSurfer.Timeline);
+
+                timeline.init({
+                    wavesurfer: wavesurfer,
+                    container: '#waveform-timeline',
+                    
+                });
+
+                var audio_duration = wavesurfer.getDuration();
+            });
+
+            var slider = document.querySelector('#slider');
+
+            slider.oninput = function() {
+                var zoomLevel = Number(slider.value);
+                wavesurfer.zoom(zoomLevel);
+            };
+
+            $("#start").click(function() {
+                wavesurfer.play();
+            });
+            $("#playPause").click(function() {
+                wavesurfer.playPause();
+            });
+            $("#stop").click(function() {
+                wavesurfer.stop();
+            });
+
+        });
+        // Convert seconds into MS
+        function secondsTimeSpanToMS(s) {
+            var m = Math.floor(s / 60); //Get remaining minutes
+            s -= m * 60;
+            s = Math.floor(s);
+            return (m < 10 ? '0' + m : m) + ":" + (s < 10 ? '0' + s : s); //zero padding on minutes and seconds
+        } // End secondsTimeSpanToMS
+    </script>
+</body>
+
+</html>
