@@ -15,7 +15,7 @@
 <body>
     <div id="waveform"></div>
     <div id="waveform-timeline"></div>
-    <div><input id="slider" type="range" min="1" max="200" value="1" style="width: 100%" /></div>
+    <div><input id="slider" type="range" min="0" max="100" value="1" style="width: 100%" /></div>
     <div><button id="start">start</button>
         <button id="playPause">play/pause</button>
         <button id="stop">stop</button></div>
@@ -31,22 +31,22 @@
 
             });
 
-            wavesurfer.load('./usc.mp3');
+            var wavedata = wavesurfer.load('./usc.mp3');
 
             wavesurfer.on('ready', function() {
                 // Enable creating regions by dragging
                 wavesurfer.enableDragSelection({
-                    color: 'rgba(37, 57, 210, 0.78)'
+                    color: randomColor(0.1)
                 });
                 var timeline = Object.create(WaveSurfer.Timeline);
 
                 timeline.init({
                     wavesurfer: wavesurfer,
                     container: '#waveform-timeline',
-                    
+
                 });
 
-                var audio_duration = wavesurfer.getDuration();
+                var audio_duration = wavesurfer.duration;
             });
 
             var slider = document.querySelector('#slider');
@@ -74,6 +74,16 @@
             s = Math.floor(s);
             return (m < 10 ? '0' + m : m) + ":" + (s < 10 ? '0' + s : s); //zero padding on minutes and seconds
         } // End secondsTimeSpanToMS
+
+        /**
+         * Random RGBA color.
+         */
+        function randomColor(alpha) {
+            return 'rgba(' + [~~(Math.random() * 255), ~~(Math.random() * 255), ~~(Math.random() * 255),
+                alpha || 1
+            ] + ')';
+
+        }
     </script>
 </body>
 
